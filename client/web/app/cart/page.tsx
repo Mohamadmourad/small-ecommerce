@@ -1,8 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import { ShoppingCart } from "lucide-react";
 import callApi from "@/utils/callApi";
 import Loading from "@/components/Loading";
@@ -111,11 +110,6 @@ const CartPage = () => {
         return cartItems.reduce((total, item) => total + item.totalPrice, 0);
     };
 
-    const handleProceedOrder = () => {
-        console.log("Proceeding to order...");
-        // TODO: Navigate to checkout or create order
-    };
-
     return (
         <div className="container mx-auto">
             <Header />
@@ -175,7 +169,6 @@ const CartPage = () => {
                             <OrderSummary
                                 itemCount={cartItems.length}
                                 total={calculateTotal()}
-                                onProceedOrder={handleProceedOrder}
                             />
                         </div>
                     </div>

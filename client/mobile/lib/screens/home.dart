@@ -26,7 +26,6 @@ class _HomeState extends State<Home> {
       final response = await callApi('GET', '/products');
       
       if (response['status'] == 200) {
-        // Parse the products from the response
         final List<dynamic> productList = response['data'] as List<dynamic>;
         
         setState(() {
@@ -34,12 +33,9 @@ class _HomeState extends State<Home> {
           isLoading = false;
         });
       } else {
-        // Handle error
         setState(() {
           isLoading = false;
         });
-        // You can show an error message here if needed
-        print('Failed to fetch products: ${response['data']}');
       }
     } catch (error) {
       setState(() {

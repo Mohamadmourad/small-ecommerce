@@ -21,10 +21,9 @@ import callApi from "@/utils/callApi";
 interface OrderSummaryProps {
     itemCount: number;
     total: number;
-    onProceedOrder: () => void;
 }
 
-const OrderSummary = ({ itemCount, total, onProceedOrder }: OrderSummaryProps) => {
+const OrderSummary = ({ itemCount, total }: OrderSummaryProps) => {
     const router = useRouter();
     const [isLoading, setIsLoading] = useState(false);
     const [formData, setFormData] = useState({
@@ -42,7 +41,6 @@ const OrderSummary = ({ itemCount, total, onProceedOrder }: OrderSummaryProps) =
     };
 
     const handleOrderSubmission = async () => {
-        // Validate form
         if (!formData.fullName || !formData.phoneNumber || !formData.shippingAddress) {
             alert('Please fill in all required fields');
             return;
@@ -58,7 +56,6 @@ const OrderSummary = ({ itemCount, total, onProceedOrder }: OrderSummaryProps) =
 
             if (response.status === 201) {
                 const orderId = response.data; 
-                onProceedOrder();
                 router.push(`/payment-success?orderId=${orderId}`);
             } else {
                 alert('Failed to create order. Please try again.');
