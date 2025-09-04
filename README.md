@@ -129,4 +129,6 @@ docker exec -it <kafka_container_name> kafka-console-consumer --topic products.l
 
 Alternatively, run the Spring Boot app and check logs — `KafkaProducerService` prints send logs.
 
-Note: I did not implement a payment gateway (stripe, wish...) i assumed that the order will be automatically set as paid
+Notes: 
+- I did not implement a payment gateway (stripe, wish...) i assumed that the order will be automatically set as paid
+- the admin account get automatically created on stratup with email admin@gmail.com and password as you set it in the application.properties

@@ -24,6 +24,7 @@ const CartPage = () => {
     const [cartItems, setCartItems] = useState<CartItem[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string>("");
+    const [isDebounce, setIsDebounce] = useState(false);
 
     useEffect(() => {
         const fetchCartItems = async () => {
@@ -61,6 +62,8 @@ const CartPage = () => {
     };
 
     const handleIncrementQuantity = async (productId: string) => {
+        if (isDebounce) return;
+        setIsDebounce(true);
         try {
             const response = await callApi("POST", "/cart/increment", { productId });
             if (response.message === "Server error") {
@@ -80,10 +83,14 @@ const CartPage = () => {
             );
         } catch (err) {
             setError("Failed to increment quantity");
+        } finally {
+            setTimeout(() => setIsDebounce(false), 1000);
         }
     };
 
     const handleDecrementQuantity = async (productId: string) => {
+        if (isDebounce) return;
+        setIsDebounce(true);
         try {
             const response = await callApi("POST", "/cart/decrement", { productId });
             if (response.message === "Server error") {
@@ -103,6 +110,8 @@ const CartPage = () => {
             );
         } catch (err) {
             setError("Failed to decrement quantity");
+        } finally {
+            setTimeout(() => setIsDebounce(false), 1000);
         }
     };
 

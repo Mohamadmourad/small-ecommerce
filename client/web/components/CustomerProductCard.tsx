@@ -21,13 +21,18 @@ interface CustomerProductCardProps {
 
 const CustomerProductCard = ({ product, onAddToCart }: CustomerProductCardProps) => {
     const [isLoading, setIsLoading] = useState(false);
+    const [isDebounce, setIsDebounce] = useState(false);
 
     const handleAddToCart = async () => {
+        if (isDebounce || isLoading || product.outOfStock || product.stock === 0) return;
+
+        setIsDebounce(true);
         setIsLoading(true);
         try {
             await onAddToCart(product.id);
         } finally {
             setIsLoading(false);
+            setTimeout(() => setIsDebounce(false), 1000);
         }
     };
 
@@ -48,7 +53,7 @@ const CustomerProductCard = ({ product, onAddToCart }: CustomerProductCardProps)
                     </div>
                     <Button 
                         onClick={handleAddToCart}
-                        disabled={product.outOfStock || product.stock === 0 || isLoading}
+                        disabled={product.outOfStock || product.stock === 0 || isLoading || isDebounce}
                         className="w-full"
                     >
                         {isLoading ? (
