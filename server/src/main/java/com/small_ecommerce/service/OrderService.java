@@ -1,7 +1,10 @@
 package com.small_ecommerce.service;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +37,8 @@ public class OrderService {
     private CartItemRepository cartItemRepository;
     @Autowired
     private ProductsRepository productsRepository;
+    @Autowired
+    private KafkaProducerService kafkaProducerService; 
 
     @Transactional
     public UUID createOrder(User user, createOrderDto orderDto){
@@ -57,6 +62,10 @@ public class OrderService {
                 orderItemsRepository.save(orderItem);
                 item.getProduct().decrementStock(item.getQuantity());
                 productsRepository.save(item.getProduct());
+                if(item.getProduct().getStock() < 5){
+                    String message = "Product " + item.getProduct().getName() + " is low on stock. Remaining stock: " + item.getProduct().getStock();
+                    kafkaProducerService.send("products.low-stock", message);
+                }
             }
             else{
                 throw new IllegalArgumentException("Stock is not enough");
@@ -66,7 +75,10 @@ public class OrderService {
         cartItemRepository.deleteAll(cart.getItems());
         cart.getItems().clear();
         cartRepository.save(cart);
-        
+
+        String message = "New order created with ID: " + newOrder.getId() + " at " + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        kafkaProducerService.send("orders.created", message);
+
         return newOrder.getId();
     }
 

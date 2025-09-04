@@ -59,7 +59,7 @@ public class CartService {
     public List<CartItemDto> getCartItemsDto(User currentUser) {
         Cart cart = cartRepository.findByUser(currentUser);
         if(cart == null) {
-            throw new IllegalArgumentException("Cart not found");
+            return List.of(); 
         }
         return cart.getItems().stream()
             .map(item -> new CartItemDto(
